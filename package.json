@@ -8,17 +8,9 @@
     "dev": "cross-env NODE_ENV=dev ./node_modules/.bin/nodemon bin/www",
     "prd": "cross-env NODE_ENV=production pm2 start pm2.conf.json"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/wangfupeng1988/imooc-320-server.git"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/wangfupeng1988/imooc-320-server/issues"
-  },
-  "homepage": "https://github.com/wangfupeng1988/imooc-320-server#readme",
   "dependencies": {
     "debug": "^4.3.4",
     "koa": "^2.13.4",
