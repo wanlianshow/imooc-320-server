@@ -6,7 +6,7 @@ const ENV = process.env.NODE_ENV
 router.get('/api/test', async (ctx, next) => {
   ctx.body = {
     errno: 0,
-    msg: `NO1.3,ENV:${ENV}`
+    msg: `NO1.4,ENV:${ENV}`
   }
 })
 
