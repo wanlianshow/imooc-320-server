@@ -1,26 +1,39 @@
-name: Build And Deploy To Aliyun ECS
+name: deploy myblog
 
-on:                               # 该 CI/CD 触发时的事件
-  push:                           # 只要push代码 就触发流程，更多触发事件请参考官方文档
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+on:
+  push:
+    branches:
+      - 'main' # 针对 main 分支
+    paths:
+      - '.github/workflows/*'
+      - 'src/**'
+      - 'bin/*'
+      - 'package.json'
 
-jobs:                             # 需要执行的任务，可以有多个任务，所有的 job 都是并行的，但往往会有依赖关系
-  build:
-    runs-on: ubuntu-latest        # github分配的运行平台，2-core CPU/7 GB of RAM memory/14 GB of SSD disk space
-    steps:                        # 某个任务的一系列步骤,如前端需要安装依赖，编译打包代码等等
-    - uses: actions/checkout@v2          #选择一个 现有的action，执行你的操作
-      with:
-        persist-credentials: false
-        ref: main
-        submodules: true
-    - name: Deploy to aliyun server        # 为 step 指定一个名称，将会在 github action 的控制台中显示
-      uses: easingthemes/ssh-deploy@v2.1.5      #可以访问的仓库，实现的上传服务器步骤被封装在此action
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.MY_ID_RSA_ALI }}  #这个是阿里云的私钥
-        ARGS: "-avzr --delete"
-        SOURCE: "./"
-        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}    #阿里云的 ip
-        REMOTE_USER: ${{ secrets.REMOTE_USER }}    #阿里云用户
-        TARGET: "/root/myblog/imooc-320-server"       #被部署的服务器路径
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2 # 第三的 action
+
+      - name: set id_rsa # 设置 id_rsa
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{secrets.MY_ID_RSA_ALI}}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan 47.94.151.254 >> ~/.ssh/known_hosts
+      - name: deploy # 自动发布
+        run: |
+          ssh root@47.94.151.254 "
+           # 注意：服务器已经 git clone 代码到 /root/myblog/imooc-320-server 目录
+           cd /root/myblog/imooc-320-server;
+           git checkout . ;
+           git checkout main;
+           git pull origin main; # 重新下载最新的代码
+           # 重启服务
+           npm install;
+           npm run prd;
+          "
+      - name: delete id_rsa # 删除 id_rsa
+        run: rm -rf ~/.ssh/id_rsa
