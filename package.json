@@ -8,6 +8,10 @@
     "dev": "cross-env NODE_ENV=dev ./node_modules/.bin/nodemon bin/www",
     "prd": "cross-env NODE_ENV=production pm2 start pm2.conf.json"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wanlianshow/imooc-320-server.git"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
