@@ -6,7 +6,7 @@ const ENV = process.env.NODE_ENV
 router.get('/api/test', async (ctx, next) => {
   ctx.body = {
     errno: 0,
-    msg: `这是一条vscode编写的代码,ENV:${ENV}`
+    msg: `测试中。。。:${ENV}`
   }
 })
 
